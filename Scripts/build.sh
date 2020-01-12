@@ -1,3 +1,3 @@
 cd ./CryptoTideAPI
 dotnet publish
-ECHO "Deployed at https://cryptotideapi.azurewebsites.net"
+echo "Deployed at https://cryptotideapi.azurewebsites.net"
