@@ -17,5 +17,5 @@ for:
     only:
       - master
 
-  build:
+  install :
     - sh: sudo bash ./Scripts/build.sh
