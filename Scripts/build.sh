@@ -1,1 +1,2 @@
+cd ./CryptoTideAPI
 dotnet publish
