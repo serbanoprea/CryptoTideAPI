@@ -1,0 +1,27 @@
+image: Ubuntu
+
+version: 1.0.0.{build}
+
+environment:
+  STORAGE_ACCOUNT_NAME:
+    secure: AfsFtomGlx4RIQq6Kk1plZL7Qu2r/Zk1pjUtB4tC/G4=
+  AZURE_STORAGE_KEY:
+    secure: O3BDa8gQtphPLOLOC/B5OUAoPIBp+U2epE7vlpmOf5FZWUE2jBMN6pUOFDD9YXlqf+0kGlGcK5RE0P2L5IXpA6qZUMQ8092v6pHN16F+860+jGNLwZZyjxmRWQqrlvDl
+
+install:
+  - bash: setup.sh
+
+test:
+  - bash: test.sh
+
+build:
+  - bash: build.sh
+
+for:
+-
+  branches:
+    only:
+      - master
+
+
+  deploy: off
