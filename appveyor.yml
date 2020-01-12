@@ -17,5 +17,6 @@ for:
     only:
       - master
 
-  install :
+  install :  
+    - sh: sudo bash ./Scripts/test.sh
     - sh: sudo bash ./Scripts/build.sh
