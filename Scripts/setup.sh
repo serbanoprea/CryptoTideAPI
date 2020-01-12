@@ -26,5 +26,5 @@ sudo apt-get install azure-cli
 az --version
 
 cd ./CryptoTideAPI
-sudo az storage blob download --container-name "settings" --name "CryptoTideAPIConfig/appsettings.json" --file "appsettings.json"
+sudo AZURE_STORAGE_KEY=$AZURE_STORAGE_KEY AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT az storage blob download --container-name "settings" --name "CryptoTideAPIConfig/appsettings.json" --file "appsettings.json"
 cd ..

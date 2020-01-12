@@ -10,6 +10,7 @@ environment:
 install:
   - sh: sudo bash ./Scripts/setup.sh
   - sh: sudo bash ./Scripts/test.sh
+  - sh: sudo bash ./Scripts/build.sh
 
 for:
 -
