@@ -25,6 +25,11 @@ namespace CryptoTideAPI
             services.AddMemoryCache();
 
             DependencyInjection.Bind(services);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("*",
+                    builder => builder.WithOrigins("*"));
+            });
             var secret = Configuration.GetSection("Authentication").GetSection("Secret").Value;
             var key = Encoding.ASCII.GetBytes(secret);
 
