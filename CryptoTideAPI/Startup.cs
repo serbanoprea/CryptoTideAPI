@@ -27,8 +27,8 @@ namespace CryptoTideAPI
             DependencyInjection.Bind(services);
             services.AddCors(options =>
             {
-                options.AddPolicy("*",
-                    builder => builder.WithOrigins("*"));
+                options.AddPolicy("AllowOrigin",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
             var secret = Configuration.GetSection("Authentication").GetSection("Secret").Value;
             var key = Encoding.ASCII.GetBytes(secret);
@@ -47,7 +47,7 @@ namespace CryptoTideAPI
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = true
                 };
             });
         }
@@ -62,6 +62,7 @@ namespace CryptoTideAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("AllowOrigin");
 
             app.UseAuthentication();
             app.UseAuthorization();
