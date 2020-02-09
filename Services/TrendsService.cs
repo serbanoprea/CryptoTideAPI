@@ -23,7 +23,7 @@ namespace Services
             LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
         }
 
-        public async Task<IEnumerable<HourlyTrend>> GetTrends(DateTime from, DateTime to, int limit=20)
+        public async Task<IEnumerable<HourlyTrend>> GetTrends(int limit=20)
         {
             var trends = await Context
                 .HourlyTrends

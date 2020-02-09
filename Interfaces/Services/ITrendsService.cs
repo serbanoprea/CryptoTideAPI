@@ -7,6 +7,6 @@ namespace Interfaces.Services
 {
     public interface ITrendsService
     {
-        Task<IEnumerable<HourlyTrend>> GetTrends(DateTime from, DateTime to, int limit=20);
+        Task<IEnumerable<HourlyTrend>> GetTrends(int limit=20);
     }
 }
