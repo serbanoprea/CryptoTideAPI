@@ -39,7 +39,7 @@ namespace Services
         {
             var trends = await Context
                 .HourlyTrends
-                .Where(t => t.Symbol.Equals(symbol, StringComparison.InvariantCultureIgnoreCase))
+                .Where(t => t.Symbol.Equals(symbol))
                 .ToListAsync();
 
             return trends;
