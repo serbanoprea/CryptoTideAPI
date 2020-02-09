@@ -10,9 +10,9 @@ namespace Models.DatabaseModels
         public string Symbol { get; set; }
         public DateTime Date { get; set; }
         public int Hour { get; set; }
-        public float Price { get; set; }
+        public double Price { get; set; }
         public int ConsecutiveIncreases { get; set; }
-        public float PercentageIncrease { get; set; }
-        public float OverallChange { get; set; }
+        public double PercentageIncrease { get; set; }
+        public double OverallChange { get; set; }
     }
 }
