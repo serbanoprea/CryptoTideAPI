@@ -31,7 +31,7 @@ namespace Services
             if (String.IsNullOrWhiteSpace(identifier))
                 throw new ArgumentException("Specify identifier");
 
-            var coin = await Context.Coins.SingleOrDefaultAsync(c => c.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
+            var coin = await Context.Coins.SingleOrDefaultAsync(c => c.Symbol.Equals(identifier, StringComparison.InvariantCultureIgnoreCase));
 
             if (coin == null)
                 throw new ArgumentException("Invalid identifier.");

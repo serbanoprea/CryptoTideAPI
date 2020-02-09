@@ -10,7 +10,9 @@ namespace Models.DatabaseModels
         }
 
         public int Id { get; set; }
-        public string Identifier { get; set; }
+        public int PreviousRank { get; set; }
+        public int Rank { get; set; }
+        public string Symbol { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<Values> Values { get; set; }
