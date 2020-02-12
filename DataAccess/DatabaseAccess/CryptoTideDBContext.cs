@@ -19,6 +19,8 @@ namespace DataAccess.DatabaseAccess
 
         public virtual DbSet<Coins> Coins { get; set; }
         public virtual DbSet<Values> Values { get; set; }
+        public virtual DbSet<HourlyTrend> HourlyTrends { get; set; }
+        public virtual DbSet<DailyTrend> DailyTrends { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,60 +34,62 @@ namespace DataAccess.DatabaseAccess
         {
             modelBuilder.Entity<Coins>(entity =>
             {
-                entity.Property(e => e.Identifier)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .IsUnicode(false);
 
-                entity.Property(e => e.Name)
+                entity.Property(e => e.Symbol)
                     .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<DailyTrend>(entity =>
+            {
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.Symbol)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<HourlyTrend>(entity =>
+            {
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.Symbol)
+                    .IsRequired()
+                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
             modelBuilder.Entity<Values>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Date).HasColumnType("date");
 
-                entity.Property(e => e.LiquidityAsk)
-                    .HasColumnName("Liquidity.Ask")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.LiquidityAsk).HasColumnName("Liquidity.Ask");
 
-                entity.Property(e => e.LiquidityBid)
-                    .HasColumnName("Liquidity.Bid")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.LiquidityBid).HasColumnName("Liquidity.Bid");
 
-                entity.Property(e => e.LiquidityRatio)
-                    .HasColumnName("Liquidity.Ratio")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.LiquidityRatio).HasColumnName("Liquidity.Ratio");
 
-                entity.Property(e => e.Performance1m)
-                    .HasColumnName("Performance.1m")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.Performance1m).HasColumnName("Performance.1m");
 
-                entity.Property(e => e.Performance1w)
-                    .HasColumnName("Performance.1w")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.Performance1w).HasColumnName("Performance.1w");
 
-                entity.Property(e => e.Performance1y)
-                    .HasColumnName("Performance.1y")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.Performance1y).HasColumnName("Performance.1y");
 
-                entity.Property(e => e.Performance24h)
-                    .HasColumnName("Performance.24h")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.Performance24h).HasColumnName("Performance.24h");
 
-                entity.Property(e => e.Performance6m)
-                    .HasColumnName("Performance.6m")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.Performance6m).HasColumnName("Performance.6m");
 
-                entity.Property(e => e.PerformanceYtd)
-                    .HasColumnName("Performance.ytd")
-                    .HasColumnType("numeric(18, 0)");
+                entity.Property(e => e.PerformanceYtd).HasColumnName("Performance.ytd");
 
-                entity.Property(e => e.Price).HasColumnType("numeric(18, 0)");
-
-                entity.Property(e => e.ValueDate).HasColumnType("date");
+                entity.Property(e => e.Symbol)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Coin)
                     .WithMany(p => p.Values)
