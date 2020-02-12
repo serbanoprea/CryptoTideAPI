@@ -20,6 +20,7 @@ namespace DataAccess.DatabaseAccess
         public virtual DbSet<Coins> Coins { get; set; }
         public virtual DbSet<Values> Values { get; set; }
         public virtual DbSet<HourlyTrend> HourlyTrends { get; set; }
+        public virtual DbSet<DailyTrend> DailyTrends { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -43,15 +44,15 @@ namespace DataAccess.DatabaseAccess
                     .IsUnicode(false);
             });
 
-            //modelBuilder.Entity<DailyTrend>(entity =>
-            //{
-            //    entity.Property(e => e.Date).HasColumnType("date");
+            modelBuilder.Entity<DailyTrend>(entity =>
+            {
+                entity.Property(e => e.Date).HasColumnType("date");
 
-            //    entity.Property(e => e.Symbol)
-            //        .IsRequired()
-            //        .HasMaxLength(50)
-            //        .IsUnicode(false);
-            //});
+                entity.Property(e => e.Symbol)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
 
             modelBuilder.Entity<HourlyTrend>(entity =>
             {

@@ -23,12 +23,12 @@ namespace Services
             LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
         }
 
-        public async Task<IEnumerable<HourlyTrend>> GetTrends(int limit=20)
+        public async Task<IEnumerable<HourlyTrend>> GetHourlyTrends(int limit=20)
         {
             var trends = await Context
                 .HourlyTrends
                 .Where(t => t.Date == DateTime.Now.Date && t.Hour == LastHour)
-                .OrderBy(t => t.PercentageIncrease * t.ConsecutiveIncreases)
+                .OrderByDescending(t => t.PercentageIncrease * t.ConsecutiveIncreases)
                 .Take(limit)
                 .ToListAsync();
 
@@ -40,6 +40,18 @@ namespace Services
             var trends = await Context
                 .HourlyTrends
                 .Where(t => t.Symbol.Equals(symbol))
+                .ToListAsync();
+
+            return trends;
+        }
+
+        public async Task<IEnumerable<DailyTrend>> GetDailyTrends(int limit=20)
+        {
+            var trends = await Context
+                .DailyTrends
+                .Where(t => t.Date == DateTime.Today.AddDays(-1))
+                .OrderByDescending(t => t.ConsecutiveHighChange * t.HighPercChange)
+                .Take(limit)
                 .ToListAsync();
 
             return trends;

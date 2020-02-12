@@ -19,7 +19,7 @@ namespace CryptoTideAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<HourlyTrend>> Get()
         {
-            var coins = await service.GetTrends();
+            var coins = await service.GetHourlyTrends();
             return coins;
         }
     }
