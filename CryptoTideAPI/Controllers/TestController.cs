@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseModels;
+using Models.DTOs;
 
 namespace CryptoTideAPI.Controllers
 {
@@ -17,7 +18,7 @@ namespace CryptoTideAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<HourlyTrend>> Get()
+        public async Task<IEnumerable<HourlyTrendDTO>> Get()
         {
             var coins = await service.GetHourlyTrends();
             return coins;
