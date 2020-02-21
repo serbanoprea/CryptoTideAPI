@@ -92,14 +92,15 @@ namespace Services
 
         private HourlyTrendsGraphDTO GroupToDTO(IGrouping<string, HourlyTrend> group, IEnumerable<Coins> coins)
         {
+            var groupList = group.ToList();
             return new HourlyTrendsGraphDTO
             {
                 Name = coins.Single(c => c.Symbol.Equals(group.Key)).Name,
-                Dates = group.ToList().Select(t => t.Date.AddHours(t.Hour)),
-                Changes = group.ToList().Select(t => t.OverallChange),
-                Prices = group.ToList().Select(t => t.Price),
-                ConsecutiveIncreasePerc = group.ToList().Select(t => t.PercentageIncrease),
-                MaxConsecutiveIncreases = group.ToList().Max(t => t.ConsecutiveIncreases)
+                Dates = groupList.Select(t => t.Date.AddHours(t.Hour)),
+                Changes = groupList.Select(t => t.OverallChange),
+                Prices = groupList.Select(t => t.Price),
+                ConsecutiveIncreasePerc = groupList.Select(t => t.PercentageIncrease),
+                MaxConsecutiveIncreases = groupList.Max(t => t.ConsecutiveIncreases)
             };
         }
 
