@@ -8,7 +8,7 @@ using Models.DatabaseModels;
 namespace CryptoTideAPI.Controllers
 {
     [ApiController]
-    //[Authorize]
+    //[Authorize()]
     [Route("api/[controller]")]
     public class TrendingController : ControllerBase
     {
@@ -44,8 +44,23 @@ namespace CryptoTideAPI.Controllers
         public async Task<IActionResult> GetDailyTrends()
         {
             var trends = await service.GetDailyTrends();
-
             return Ok(trends);
+        }
+
+        [HttpGet]
+        [Route("GraphHourlyTrends/{symbol}")]
+        public async Task<IActionResult> GetHourlyGraphTrends(string symbol)
+        {
+            var graphTrends = await service.HourlyTrendGraph(symbol);
+            return Ok(graphTrends);
+        }
+
+        [HttpGet]
+        [Route("GraphHourlyTrends")]
+        public async Task<IActionResult> GetHourlyGraphTrends()
+        {
+            var graphTrends = await service.HourlyTrendsGraph();
+            return Ok(graphTrends);
         }
     }
 }

@@ -66,6 +66,43 @@ namespace Services
             return dtos;
         }
 
+        public async Task<HourlyTrendsGraphDTO> HourlyTrendGraph(string symbol)
+        {
+            var trends = await Context.HourlyTrends.Where(s => s.Symbol == symbol).ToListAsync();
+            var coins = await IngressService.GetAllCoins();
+            return trends
+                .GroupBy(t => t.Symbol)
+                .Select(group => GroupToDTO(group, coins))
+                .First();
+        }
+
+        public async Task<IEnumerable<HourlyTrendsGraphDTO>> HourlyTrendsGraph()
+        {
+            var trends = (await GetHourlyTrends()).Select(t => t.Symbol);
+            var coins = await IngressService.GetAllCoins();
+            var filteredTrends = await Context
+                    .HourlyTrends
+                    .FromSqlRaw($"SELECT * FROM HourlyTrends WHERE Symbol IN ({string.Join(",", trends.Select(t => $"'{t}'"))})")
+                    .ToListAsync();
+
+            return filteredTrends
+                    .GroupBy(t => t.Symbol)
+                    .Select(group => GroupToDTO(group, coins));
+        }
+
+        private HourlyTrendsGraphDTO GroupToDTO(IGrouping<string, HourlyTrend> group, IEnumerable<Coins> coins)
+        {
+            return new HourlyTrendsGraphDTO
+            {
+                Name = coins.Single(c => c.Symbol.Equals(group.Key)).Name,
+                Dates = group.ToList().Select(t => t.Date.AddHours(t.Hour)),
+                Changes = group.ToList().Select(t => t.OverallChange),
+                Prices = group.ToList().Select(t => t.Price),
+                ConsecutiveIncreasePerc = group.ToList().Select(t => t.PercentageIncrease),
+                MaxConsecutiveIncreases = group.ToList().Max(t => t.ConsecutiveIncreases)
+            };
+        }
+
         private async Task<IEnumerable<HourlyTrendDTO>> ModelToDTOs(IEnumerable<HourlyTrend> trends)
         {
             var coins = await IngressService.GetAllCoins();

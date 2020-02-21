@@ -9,5 +9,7 @@ namespace Interfaces.Services
         Task<IEnumerable<HourlyTrendDTO>> GetHourlyTrends(int limit = 20);
         Task<IEnumerable<HourlyTrendDTO>> GetTrendBySymbol(string symbol);
         Task<IEnumerable<DailyTrendDTO>> GetDailyTrends(int limit = 20);
+        Task<IEnumerable<HourlyTrendsGraphDTO>> HourlyTrendsGraph();
+        Task<HourlyTrendsGraphDTO> HourlyTrendGraph(string symbol);
     }
 }
