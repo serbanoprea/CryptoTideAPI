@@ -51,6 +51,9 @@ namespace CryptoTideAPI.Controllers
         [Route("GraphHourlyTrends/{symbol}")]
         public async Task<IActionResult> GetHourlyGraphTrends(string symbol)
         {
+            if (string.IsNullOrWhiteSpace(symbol))
+                return BadRequest();
+
             var graphTrends = await service.HourlyTrendGraph(symbol);
             return Ok(graphTrends);
         }

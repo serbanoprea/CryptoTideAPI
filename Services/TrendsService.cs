@@ -23,7 +23,14 @@ namespace Services
             IngressService = ingressService;
 
             // TODO(Serban): Hacky, will need to keep value in memory and be updated by the data pipeline
-            LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
+            try
+            {
+                LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
+            }
+            catch
+            {
+                LastHour = 0;
+            }
         }
 
         public async Task<IEnumerable<HourlyTrendDTO>> GetHourlyTrends(int limit=20)
