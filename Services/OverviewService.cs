@@ -14,13 +14,11 @@ namespace Services
     public class OverviewService : IOverviewService
     {
         private readonly CryptoTideDBContext Context;
-        private readonly ITrendsService Service;
         private readonly int LastHour;
 
         public OverviewService(IConfiguration config, ITrendsService service)
         {
             Context = new CryptoTideDBContext(config);
-            Service = service;
             // TODO(Serban): Hacky, will need to keep value in memory and be updated by the data pipeline
             try
             {
@@ -65,7 +63,8 @@ namespace Services
                 Price = hourlyTrend.Price,
                 IncreaseHours = hourlyTrend.ConsecutiveIncreases,
                 Change = hourlyTrend.OverallChange,
-                IncreasePerc = hourlyTrend.PercentageIncrease
+                IncreasePerc = hourlyTrend.PercentageIncrease,
+                Rank = coin.Rank
             };
         }
     }
