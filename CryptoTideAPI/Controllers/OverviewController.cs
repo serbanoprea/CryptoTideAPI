@@ -22,7 +22,7 @@ namespace CryptoTideAPI.Controllers
         [Route("TopOverview")]
         public async Task<IActionResult> GetTopOverview()
         {
-            var values = await Service.GetFirstCoins();
+            var values = (await Service.GetFirstCoins()).OrderBy(c => c.Rank);
             return Ok(values);
         }
 
