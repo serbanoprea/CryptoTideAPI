@@ -38,7 +38,7 @@ namespace CryptoTideAPI.Controllers
             if (coin == null)
                 return NotFound();
 
-            return Ok();
+            return Ok(coin);
         }
     }
 }
