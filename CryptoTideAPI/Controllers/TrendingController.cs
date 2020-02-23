@@ -8,7 +8,7 @@ using Models.DatabaseModels;
 namespace CryptoTideAPI.Controllers
 {
     [ApiController]
-    //[Authorize()]
+    //[Authorize]
     [Route("api/[controller]")]
     public class TrendingController : ControllerBase
     {
