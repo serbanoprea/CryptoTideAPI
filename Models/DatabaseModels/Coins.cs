@@ -7,6 +7,8 @@ namespace Models.DatabaseModels
         public Coins()
         {
             Values = new HashSet<Values>();
+            HourlyTrends = new HashSet<HourlyTrend>();
+            DailyTrends = new HashSet<DailyTrend>();
         }
 
         public int Id { get; set; }
@@ -16,5 +18,7 @@ namespace Models.DatabaseModels
         public string Name { get; set; }
 
         public virtual ICollection<Values> Values { get; set; }
+        public virtual ICollection<HourlyTrend> HourlyTrends { get; set; }
+        public virtual ICollection<DailyTrend> DailyTrends { get; set; }
     }
 }

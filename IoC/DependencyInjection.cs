@@ -15,6 +15,7 @@ namespace IoC
             services.AddTransient<IDBUnitOfWork, DBUnitOfWork>();
             services.AddTransient<IIngressService, IngressService>();
             services.AddTransient<ITableUnitOfWork, TableUnitOfWork>();
+            services.AddTransient<IOverviewService, OverviewService>();
             services.AddTransient<ITrendsService, TrendsService>();
             services.AddScoped<IUsersService, UsersService>();
         }

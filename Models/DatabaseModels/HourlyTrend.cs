@@ -14,5 +14,7 @@ namespace Models.DatabaseModels
         public int ConsecutiveIncreases { get; set; }
         public double PercentageIncrease { get; set; }
         public double OverallChange { get; set; }
+        public int CoinId { get; set; }
+        public virtual Coins Coin { get; set; }
     }
 }

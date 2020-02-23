@@ -35,6 +35,8 @@ namespace CryptoTideAPI.Controllers
                 return BadRequest();
 
             var trends = await service.GetTrendBySymbol(symbol);
+            if (trends == null)
+                return NotFound();
 
             return Ok(trends);
         }
@@ -55,6 +57,10 @@ namespace CryptoTideAPI.Controllers
                 return BadRequest();
 
             var graphTrends = await service.HourlyTrendGraph(symbol);
+
+            if (graphTrends == null)
+                return NotFound();
+
             return Ok(graphTrends);
         }
 
@@ -64,6 +70,14 @@ namespace CryptoTideAPI.Controllers
         {
             var graphTrends = await service.HourlyTrendsGraph();
             return Ok(graphTrends);
+        }
+
+        [HttpGet]
+        [Route("GraphTopRanked")]
+        public async Task<IActionResult> GetGraphRanked()
+        {
+            var graphTopRanked = await service.GetFirstCoinsTrends();
+            return Ok(graphTopRanked);
         }
     }
 }

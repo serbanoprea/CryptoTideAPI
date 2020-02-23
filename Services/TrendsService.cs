@@ -25,6 +25,7 @@ namespace Services
             // TODO(Serban): Hacky, will need to keep value in memory and be updated by the data pipeline
             try
             {
+                // Errors if max is 0
                 LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
             }
             catch
@@ -42,9 +43,7 @@ namespace Services
                 .Take(limit)
                 .ToListAsync();
 
-            var dtos = await ModelToDTOs(trends);
-
-            return dtos;
+            return await ModelToDTOs(trends);
         }
 
         public async Task<IEnumerable<HourlyTrendDTO>> GetTrendBySymbol(string symbol)
@@ -54,13 +53,12 @@ namespace Services
                 .Where(t => t.Symbol == symbol)
                 .ToListAsync();
 
-            var dtos = await ModelToDTOs(trends);
-
-            return dtos;
+            return await ModelToDTOs(trends);
         }
 
         public async Task<IEnumerable<DailyTrendDTO>> GetDailyTrends(int limit=20)
         {
+            var coins = await IngressService.GetAllCoins();
             var trends = await Context
                 .DailyTrends
                 .Where(t => t.Date == DateTime.Today.AddDays(-1))
@@ -68,9 +66,7 @@ namespace Services
                 .Take(limit)
                 .ToListAsync();
 
-            var dtos = await ModelToDTOs(trends);
-
-            return dtos;
+            return ModelToDTOs(trends, coins);
         }
 
         public async Task<HourlyTrendsGraphDTO> HourlyTrendGraph(string symbol)
@@ -85,11 +81,11 @@ namespace Services
 
         public async Task<IEnumerable<HourlyTrendsGraphDTO>> HourlyTrendsGraph()
         {
-            var trends = (await GetHourlyTrends()).Select(t => t.Symbol);
+            var trends = (await GetHourlyTrends()).Select(t => $"'{t.Symbol}'");
             var coins = await IngressService.GetAllCoins();
             var filteredTrends = await Context
                     .HourlyTrends
-                    .FromSqlRaw($"SELECT * FROM HourlyTrends WHERE Symbol IN ({string.Join(",", trends.Select(t => $"'{t}'"))})")
+                    .FromSqlRaw($"SELECT * FROM HourlyTrends WHERE Symbol IN ({string.Join(",", trends)})")
                     .ToListAsync();
 
             return filteredTrends
@@ -97,7 +93,8 @@ namespace Services
                     .Select(group => GroupToDTO(group, coins));
         }
 
-        private HourlyTrendsGraphDTO GroupToDTO(IGrouping<string, HourlyTrend> group, IEnumerable<Coins> coins)
+        // Should be in helpers
+        public HourlyTrendsGraphDTO GroupToDTO(IGrouping<string, HourlyTrend> group, IEnumerable<Coins> coins)
         {
             var groupList = group.ToList();
             return new HourlyTrendsGraphDTO
@@ -107,8 +104,24 @@ namespace Services
                 Changes = groupList.Select(t => t.OverallChange),
                 Prices = groupList.Select(t => t.Price),
                 ConsecutiveIncreasePerc = groupList.Select(t => t.PercentageIncrease),
-                MaxConsecutiveIncreases = groupList.Max(t => t.ConsecutiveIncreases)
+                MaxConsecutiveIncreases = groupList.Max(t => t.ConsecutiveIncreases),
+                MaxIncreaseSeries = groupList.Max(t => t.PercentageIncrease)
             };
+        }
+
+        public async Task<IEnumerable<HourlyTrendsGraphDTO>> GetFirstCoinsTrends(int limit = 20)
+        {
+            var topCoins = await Context
+                .Coins
+                .Where(c => c.Rank <= limit)
+                .ToListAsync();
+
+            var trends = await Context
+                    .HourlyTrends
+                    .FromSqlRaw($"SELECT * FROM HourlyTrends WHERE Symbol IN ({string.Join(",", topCoins.Select(t => $"'{t.Symbol}'"))})")
+                    .ToListAsync();
+
+            return trends.GroupBy(t => t.Symbol).Select(group => GroupToDTO(group, topCoins));
         }
 
         private async Task<IEnumerable<HourlyTrendDTO>> ModelToDTOs(IEnumerable<HourlyTrend> trends)
@@ -128,10 +141,8 @@ namespace Services
             });
         }
 
-        private async Task<IEnumerable<DailyTrendDTO>> ModelToDTOs(IEnumerable<DailyTrend> trends)
+        private IEnumerable<DailyTrendDTO> ModelToDTOs(IEnumerable<DailyTrend> trends, IEnumerable<Coins> coins)
         {
-            var coins = await IngressService.GetAllCoins();
-
             return trends.Select(t => new DailyTrendDTO
             {
                 Name = coins.Single(c => c.Symbol.Equals(t.Symbol)).Name,

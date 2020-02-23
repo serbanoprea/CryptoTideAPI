@@ -29,5 +29,7 @@ namespace Models.DatabaseModels
         public int ConsecutiveSmallChange { get; set; }
         public int ConsecutiveMediumChange { get; set; }
         public int ConsecutiveHighChange { get; set; }
+        public int CoinId { get; set; }
+        public virtual Coins Coin { get; set; }
     }
 }

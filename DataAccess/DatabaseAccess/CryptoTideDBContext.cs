@@ -52,6 +52,12 @@ namespace DataAccess.DatabaseAccess
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Coin)
+                    .WithMany(p => p.DailyTrends)
+                    .HasForeignKey(d => d.CoinId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DailyTrends_Coins");
             });
 
             modelBuilder.Entity<HourlyTrend>(entity =>
@@ -62,6 +68,12 @@ namespace DataAccess.DatabaseAccess
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Coin)
+                    .WithMany(p => p.HourlyTrends)
+                    .HasForeignKey(d => d.CoinId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_HourlyTrends_Coins");
             });
 
             modelBuilder.Entity<Values>(entity =>
