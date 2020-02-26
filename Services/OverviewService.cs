@@ -31,7 +31,7 @@ namespace Services
             }
         }
 
-        public async Task<IEnumerable<OverviewDTO>> GetFirstCoins(int limit = 20)
+        public async Task<IEnumerable<OverviewDTO>> GetFirstCoins(int limit = 10)
         {
             return (await Context.Coins
                     .Where(c => c.Rank <= limit)

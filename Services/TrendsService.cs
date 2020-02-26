@@ -34,7 +34,7 @@ namespace Services
             }
         }
 
-        public async Task<IEnumerable<HourlyTrendDTO>> GetHourlyTrends(int limit=20)
+        public async Task<IEnumerable<HourlyTrendDTO>> GetHourlyTrends(int limit=10)
         {
             var trends = await Context
                 .HourlyTrends
@@ -56,7 +56,7 @@ namespace Services
             return await ModelToDTOs(trends);
         }
 
-        public async Task<IEnumerable<DailyTrendDTO>> GetDailyTrends(int limit=20)
+        public async Task<IEnumerable<DailyTrendDTO>> GetDailyTrends(int limit=10)
         {
             var coins = await IngressService.GetAllCoins();
             var trends = await Context
@@ -109,7 +109,7 @@ namespace Services
             };
         }
 
-        public async Task<IEnumerable<HourlyTrendsGraphDTO>> GetFirstCoinsTrends(int limit = 20)
+        public async Task<IEnumerable<HourlyTrendsGraphDTO>> GetFirstCoinsTrends(int limit = 10)
         {
             var topCoins = await Context
                 .Coins
