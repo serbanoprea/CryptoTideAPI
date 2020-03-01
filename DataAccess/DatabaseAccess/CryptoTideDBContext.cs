@@ -17,10 +17,12 @@ namespace DataAccess.DatabaseAccess
         {
         }
 
+        public virtual DbSet<CoinAggregate> CoinAggregates { get; set; }
         public virtual DbSet<Coins> Coins { get; set; }
-        public virtual DbSet<Values> Values { get; set; }
-        public virtual DbSet<HourlyTrend> HourlyTrends { get; set; }
         public virtual DbSet<DailyTrend> DailyTrends { get; set; }
+        public virtual DbSet<HourlyTrend> HourlyTrends { get; set; }
+        public virtual DbSet<PopulationAggregate> PopulationAggregates { get; set; }
+        public virtual DbSet<Values> Values { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,6 +34,20 @@ namespace DataAccess.DatabaseAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CoinAggregate>(entity =>
+            {
+                entity.Property(e => e.Symbol)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Coin)
+                    .WithMany(p => p.CoinAggregates)
+                    .HasForeignKey(d => d.CoinId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CoinAggregates_Coins");
+            });
+
             modelBuilder.Entity<Coins>(entity =>
             {
                 entity.Property(e => e.Name)
@@ -74,6 +90,11 @@ namespace DataAccess.DatabaseAccess
                     .HasForeignKey(d => d.CoinId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_HourlyTrends_Coins");
+            });
+
+            modelBuilder.Entity<PopulationAggregate>(entity =>
+            {
+                entity.Property(e => e.Date).HasColumnType("date");
             });
 
             modelBuilder.Entity<Values>(entity =>

@@ -19,10 +19,22 @@ namespace CryptoTideAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Average/{difference}")]
-        public async Task<IActionResult> GetDateDiffAverage(int difference = 7)
+        [Route("TopCoinAggregates")]
+        public async Task<IActionResult> CoinAggregates()
         {
-            var stat = await PopulationStatsService.AverageChangeByDateDiff(difference);
+            var stat = await PopulationStatsService.DailyBestPerformers();
+            return Ok(stat);
+        }
+
+        [HttpGet]
+        [Route("CoinAggregate/{symbol}")]
+        public async Task<IActionResult> SingleCoinAggregate(string symbol)
+        {
+            var stat = await PopulationStatsService.SingleCoinAggregate(symbol);
+
+            if (stat == null)
+                return NotFound();
+
             return Ok(stat);
         }
     }
