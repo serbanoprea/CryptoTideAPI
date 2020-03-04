@@ -7,6 +7,7 @@ namespace Models.DTOs
     public class CoinAggregateDTO
     {
         public string Name { get; set; }
+        public double Price { get; set; }
         public string Symbol { get; set; }
         public double AverageDayChange { get; set; }
         public double SumDayChange { get; set; }

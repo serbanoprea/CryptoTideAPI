@@ -15,35 +15,51 @@ namespace Services
     public class PopulationStatsService : IPopulationStatsService
     {
         private readonly CryptoTideDBContext Context;
+        private readonly int LastHour;
 
         public PopulationStatsService(IConfiguration config)
         {
             Context = new CryptoTideDBContext(config);
+
+            // TODO(Serban): Hacky, will need to keep value in memory and be updated by the data pipeline
+            try
+            {
+                // Errors if max is 0
+                LastHour = Context.HourlyTrends.Where(t => t.Date == DateTime.Now.Date).Max(t => t.Hour);
+            }
+            catch
+            {
+                LastHour = 0;
+            }
         }
-
-
+        
         public async Task<IEnumerable<CoinAggregateDTO>> DailyBestPerformers()
         {
-            var aggregates = await Context.CoinAggregates.OrderByDescending(c => c.SumDayChange * c.DayRecords).Take(3).ToListAsync();
+            var aggregates = await Context.CoinAggregates.OrderByDescending(c => c.SumDayChange * c.DayRecords).Take(5).ToListAsync();
+            var prices = await Context.Values.Where(v => v.Date == DateTime.Now.Date && v.Hour == LastHour).ToListAsync();
             var coins = await Context.Coins.ToListAsync();
 
-            return aggregates.Select(aggregate => ModelToDTO(aggregate, coins));
+            return aggregates.Select(aggregate => ModelToDTO(aggregate, coins, prices));
         }
 
         public async Task<CoinAggregateDTO> SingleCoinAggregate(string symbol)
         {
             var aggregate = await Context.CoinAggregates.SingleOrDefaultAsync(c => c.Symbol == symbol);
+
             if (aggregate == null)
                 return null;
+            
+            var prices = await Context.Values.Where(v => v.Date == DateTime.Now.Date && v.Hour == LastHour).ToListAsync();
             var coins = await Context.Coins.ToListAsync();
-            return ModelToDTO(aggregate, coins);
+            return ModelToDTO(aggregate, coins, prices);
         }
 
-        public CoinAggregateDTO ModelToDTO(CoinAggregate aggregate, IEnumerable<Coins> coins)
+        public CoinAggregateDTO ModelToDTO(CoinAggregate aggregate, IEnumerable<Coins> coins, IEnumerable<Values> prices)
         {
             return new CoinAggregateDTO
             {
                 Name = coins.Single(c => c.Symbol == aggregate.Symbol).Name,
+                Price = prices.Single(c => c.Symbol == aggregate.Symbol).Price,
                 Symbol = aggregate.Symbol,
                 AverageDayChange = aggregate.AverageDayChange,
                 AverageWeekChange = aggregate.AverageWeekChange,
