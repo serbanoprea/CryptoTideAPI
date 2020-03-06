@@ -35,11 +35,10 @@ namespace Services
         
         public async Task<IEnumerable<CoinAggregateDTO>> DailyBestPerformers()
         {
-            var aggregates = await Context.CoinAggregates.OrderByDescending(c => c.SumDayChange * c.DayRecords).Take(5).ToListAsync();
-            var prices = await Context.Values.Where(v => v.Date == DateTime.Now.Date && v.Hour == LastHour).ToListAsync();
+            var aggregates = await Context.CoinAggregates.OrderByDescending(c => c.DayChange).Take(5).ToListAsync();
             var coins = await Context.Coins.ToListAsync();
 
-            return aggregates.Select(aggregate => ModelToDTO(aggregate, coins, prices));
+            return aggregates.Select(aggregate => ModelToDTO(aggregate, coins));
         }
 
         public async Task<CoinAggregateDTO> SingleCoinAggregate(string symbol)
@@ -48,54 +47,57 @@ namespace Services
 
             if (aggregate == null)
                 return null;
-            
-            var prices = await Context.Values.Where(v => v.Date == DateTime.Now.Date && v.Hour == LastHour).ToListAsync();
+
             var coins = await Context.Coins.ToListAsync();
-            return ModelToDTO(aggregate, coins, prices);
+            return ModelToDTO(aggregate, coins);
         }
 
-        public CoinAggregateDTO ModelToDTO(CoinAggregate aggregate, IEnumerable<Coins> coins, IEnumerable<Values> prices)
+        public CoinAggregateDTO ModelToDTO(CoinAggregate aggregate, IEnumerable<Coins> coins)
         {
             return new CoinAggregateDTO
             {
                 Name = coins.Single(c => c.Symbol == aggregate.Symbol).Name,
-                Price = prices.Single(c => c.Symbol == aggregate.Symbol).Price,
                 Symbol = aggregate.Symbol,
-                AverageDayChange = aggregate.AverageDayChange,
-                AverageWeekChange = aggregate.AverageWeekChange,
-                StDevDayChange = aggregate.StDevDayChange,
-                StDevWeekChange = aggregate.StDevWeekChange,
-                SumDayChange = aggregate.SumDayChange,
-                SumWeekChange = aggregate.SumWeekChange,
+                Price = aggregate.Price,
+                DayChange = aggregate.DayChange,
+                WeekChange = aggregate.WeekChange,
+                MonthChange = aggregate.MonthChange,
 
-                DayRecords = aggregate.DayRecords,
-                WeekRecords = aggregate.WeekRecords,
-                DayVolatility = aggregate.DayVolatility,
-                WeekVolatility = aggregate.WeekVolatility,
+                Min24hVolatility = aggregate.Min24hVolatility,
+                Small24hVolatility = aggregate.Small24hVolatility,
+                Medium24hVolatility = aggregate.Medium24hVolatility,
 
-                HigherThan25PercDay = aggregate.HigherThan25PercDay,
-                HigherThan75PercDay = aggregate.HigherThan75PercDay,
-                HigherThanMedianDay = aggregate.HigherThanMedianDay,
-                HigherThanAverageDay = aggregate.HigherThanAverageDay,
+                Min24hChange = aggregate.Min24hChange,
+                High24hVolatility = aggregate.High24hVolatility,
+                Max24hVolatility = aggregate.Max24hVolatility,
+                Small24hChange = aggregate.Small24hChange,
+                Medium24hChange = aggregate.Medium24hChange,
+                High24hChange = aggregate.High24hChange,
+                Max24hChange = aggregate.Max24hChange,
 
-                HigherThan25PercWeek = aggregate.HigherThan25PercWeek,
-                HigherThanMedianWeek = aggregate.HigherThanMedianWeek,
-                HigherThanAverageWeek = aggregate.HigherThanAverageWeek,
-                HigherThan75PercWeek = aggregate.HigherThan75PercWeek,
-
-                HigherThanAverageVolatilityDay = aggregate.HigherThanAverageVolatilityDay,
-                HigherVolatilityThan25PercDay = aggregate.HigherVolatilityThan25PercDay,
-                HigherVolatilityThanMedianDay = aggregate.HigherVolatilityThanMedianDay,
-                HigherVolatilityThan75PercDay = aggregate.HigherVolatilityThan75PercDay,
-                MaxDayVolatility = aggregate.MaxDayVolatility,
-                MinDayVolatility = aggregate.MinDayVolatility,
-                
-                HigherVolatilityThan25PercWeek = aggregate.HigherVolatilityThan25PercWeek,
-                HigherVolatilityMedianWeek = aggregate.HigherVolatilityMedianWeek,
-                HigherThanAverageVolatilityWeek = aggregate.HigherThanAverageVolatilityWeek,
-                HigherVolatilityThan75PercWeek = aggregate.HigherVolatilityThan75PercWeek,
+                MinWeekVolatility = aggregate.MinWeekVolatility,
+                SmallWeekVolatility = aggregate.SmallWeekVolatility,
+                MediumWeekVolatility = aggregate.MediumWeekVolatility,
+                HighWeekVolatility = aggregate.HighWeekVolatility,
                 MaxWeekVolatility = aggregate.MaxWeekVolatility,
-                MinWeekVolatility = aggregate.MinWeekVolatility
+
+                MinWeekChange = aggregate.MinWeekChange,
+                SmallWeekChange = aggregate.SmallWeekChange,
+                MediumWeekChange = aggregate.MediumWeekChange,
+                HighWeekChange = aggregate.HighWeekChange,
+                MaxWeekChange = aggregate.MaxWeekChange,
+
+                MinMonthChange = aggregate.MinMonthChange,
+                SmallMonthChange = aggregate.SmallMonthChange,
+                MediumMonthChange = aggregate.MediumMonthChange,
+                HighMonthChange = aggregate.HighMonthChange,
+                MaxMonthChange = aggregate.MaxMonthChange,
+
+                MinMonthVolatility = aggregate.MinMonthVolatility,
+                SmallMonthVolatility = aggregate.SmallMonthVolatility,
+                MediumMonthVolatility = aggregate.MediumMonthVolatility,
+                HighMonthVolatility = aggregate.HighMonthVolatility,
+                MaxMonthVolatility = aggregate.MaxMonthVolatility
             };
         }
     }
