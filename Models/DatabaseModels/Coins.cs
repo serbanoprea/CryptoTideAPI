@@ -6,9 +6,10 @@ namespace Models.DatabaseModels
     {
         public Coins()
         {
-            Values = new HashSet<Values>();
-            HourlyTrends = new HashSet<HourlyTrend>();
+            CoinAggregates = new HashSet<CoinAggregate>();
             DailyTrends = new HashSet<DailyTrend>();
+            HourlyTrends = new HashSet<HourlyTrend>();
+            Values = new HashSet<Values>();
         }
 
         public int Id { get; set; }
@@ -17,8 +18,9 @@ namespace Models.DatabaseModels
         public string Symbol { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Values> Values { get; set; }
-        public virtual ICollection<HourlyTrend> HourlyTrends { get; set; }
+        public virtual ICollection<CoinAggregate> CoinAggregates { get; set; }
         public virtual ICollection<DailyTrend> DailyTrends { get; set; }
+        public virtual ICollection<HourlyTrend> HourlyTrends { get; set; }
+        public virtual ICollection<Values> Values { get; set; }
     }
 }
